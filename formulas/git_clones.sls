@@ -2,7 +2,7 @@
 # Further reference: https://docs.saltstack.com/en/latest/ref/states/all/salt.states.git.html
 
 include:
-  # Required for rsa key deependency.
+  # Required for rsa key dependency.
   - .config
 
 
@@ -76,7 +76,7 @@ formulas_repo_present_{{present_repo_name}}:
       - formulas_file_managed_github_rsa_deploy_key
     {%- endif %}      
 # @TODO:
-#    - depth: 1
+#    - depth: 1 (Changed in version 2019.2.0: This option now supports tags as well as branches, on Git 1.8.0 and newer.)
 #    --single-branch
 
   {%- endif %}

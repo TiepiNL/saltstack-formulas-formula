@@ -64,26 +64,25 @@ formulas_repo_pillar:
 # *** FORMULA DEPLOY ***
 # Loop through the defined formulas and clone the required versions.
 {%- for present_repo_name, repo_details in salt['pillar.get']('formulas:repos:present', {}).items() %}
-  
-  # Default to master, if no specific branch tag is set.
-  {%- set repo_target_branch = repo_details.get('branch', 'master') %}
-  # @TODO docs
-  {%- set autoupdate_from_master = repo_details.get('autoupdate_from_master', False) %}
-  {%- set use_key = repo_details.get('use_key', False) %}
-  {%- set deploy_key = repo_details.get('deploy_key', github_deploy_key) %}
+  {%- if repo_details.get('enabled', True) %}  
+    # Default to master, if no specific branch tag is set.
+    {%- set repo_target_branch = repo_details.get('branch', 'master') %}
+    # @TODO docs
+    {%- set autoupdate_from_master = repo_details.get('autoupdate_from_master', False) %}
+    {%- set use_key = repo_details.get('use_key', False) %}
+    {%- set deploy_key = repo_details.get('deploy_key', github_deploy_key) %}
 
-  # First check whether to use the default saltstack-formula url,
-  # or a custom url (for non-official formulas)
-  {%- if repo_details.get('url', False) %}
-    {%- set url = repo_details.get('url') %}
-  {%- else %}
-    {%- set url = 'https://github.com/saltstack-formulas/' + present_repo_name + '/' %}
-  {%- endif %}
+    # First check whether to use the default saltstack-formula url,
+    # or a custom url (for non-official formulas)
+    {%- if repo_details.get('url', False) %}
+      {%- set url = repo_details.get('url') %}
+    {%- else %}
+      {%- set url = 'https://github.com/saltstack-formulas/' + present_repo_name + '/' %}
+    {%- endif %}
 
-  # If the formula only uses the master branch instead of version tags,
-  # then only pull changes in the repo (if any) if auto_update is enabled.
-  {%- if (repo_target_branch == 'master') and (not autoupdate_from_master) %}
-    # @TODO: docs
+    # If the formula only uses the master branch instead of version tags,
+    # then only pull changes in the repo (if any) if auto_update is enabled.
+    {%- if (repo_target_branch == 'master') and (not autoupdate_from_master) %}
 
 # Make sure the repository is cloned to the given directory.
 formulas_repo_present_{{present_repo_name}}:
@@ -91,19 +90,19 @@ formulas_repo_present_{{present_repo_name}}:
     - name: {{url}}
     - target: {{local_formula_destination_directory}}/{{present_repo_name}}
     - branch: master
-    {%- if use_key %}
+      {%- if use_key %}
     - identity: {{deploy_key}}
-    {%- endif %}
+      {%- endif %}
     - require:
       - formulas_repo_pillar
-    {%- if use_key %}
+      {%- if use_key %}
       - formulas_file_managed_deploy_key_{{ deploy_key }}
-    {%- endif %} 
+      {%- endif %} 
 # @TODO:
 #    - depth: 1
 #    --single-branch
 
-  {%- else %}
+    {%- else %}
 
 # Make sure the repository is cloned to the given directory and is up-to-date.
 formulas_repo_present_{{present_repo_name}}:
@@ -116,18 +115,19 @@ formulas_repo_present_{{present_repo_name}}:
     - force_clone: True
     - force_fetch: True
     - force_reset: True
-    {%- if use_key %}
+      {%- if use_key %}
     - identity: {{deploy_key}}
-    {%- endif %}
+      {%- endif %}
     - require:
       - formulas_repo_pillar
-    {%- if use_key %}
+      {%- if use_key %}
       - formulas_file_managed_deploy_key_{{ deploy_key }}
-    {%- endif %}      
+      {%- endif %}      
 # @TODO:
 #    - depth: 1 (Changed in version 2019.2.0: This option now supports tags as well as branches, on Git 1.8.0 and newer.)
 #    --single-branch
 
+    {%- endif %}
   {%- endif %}
 {%- endfor %}
 

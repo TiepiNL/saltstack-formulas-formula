@@ -17,6 +17,11 @@ include:
 {%- set pillar_deploy_key = salt['pillar.get']('formulas:pillar:deploy_key', github_deploy_key) %}
 {%- set autoupdate_pillar_from_master = salt['pillar.get']('formulas:pillar:autoupdate_from_master', False) %}
 
+# *** PILLARS DEPLOY ***
+# If the pillar uses the master branch instead of version tags,
+# then only pull changes in the repo (if any) if auto_update is enabled.
+{%- if (pillar_target_branch == 'master') and (not autoupdate_pillar_from_master) %}
+
 # Make sure the pillar repository is cloned to the given directory.
 formulas_repo_pillar:
   git.cloned:
@@ -56,7 +61,7 @@ formulas_repo_pillar:
 
 {%- endif %}
 
-
+# *** FORMULA DEPLOY ***
 # Loop through the defined formulas and clone the required versions.
 {%- for present_repo_name, repo_details in salt['pillar.get']('formulas:repos:present', {}).items() %}
   
@@ -136,9 +141,3 @@ formulas_repo_absent_{{absent_repo_name}}:
     - name: {{local_formula_destination_directory}}/{{absent_repo_name}}
 
 {%- endfor %}
-
-# *** PILLAR DEPLOY ***
-# If the pillar uses the master branch instead of version tags,
-# then only pull changes in the repo (if any) if auto_update is enabled.
-{%- if (pillar_target_branch == 'master') and (not autoupdate_pillar_from_master) %}
-  # @TODO: docs

@@ -21,10 +21,10 @@ formulas_file_managed_deploy_key_{{ github_deploy_key }}:
     - mode: 600
 
 {%- for deploy_key, deploy_key_details in salt['pillar.get']('formulas:deploy_keys:present', {}).items() %}
-  {%- key_directory = deploy_key_details.get('ssh_directory', '~/.ssh') %}
+  {%- set key_directory = deploy_key_details.get('ssh_directory', '~/.ssh') %}
 
 # Make sure the (private!) key file for the ssh handshake is in place.
-formulas_file_managed_deploy_key_{{ deploy_key }}:
+formulas_file_managed_deploy_key_{{ key_directory }}/{{ deploy_key }}:
   file.managed:
     - name: {{ key_directory }}/{{ deploy_key }}
     # We don't store private keys in public repos, and we can't

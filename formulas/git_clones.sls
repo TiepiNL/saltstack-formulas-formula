@@ -30,7 +30,7 @@ formulas_repo_pillar:
     - branch: master
     - identity: {{ pillar_deploy_key }}
     - require:
-      - formulas_file_managed_deploy_key_{{ deploy_key }}
+      - formulas_file_managed_deploy_key_{{ pillar_deploy_key }}
 # @TODO:   - depth: 1
 # @TODO:   - require:
 #      - pkg: git
@@ -52,7 +52,7 @@ formulas_repo_pillar:
     - force_reset: True
     - identity: {{ pillar_deploy_key }}
     - require:
-      - formulas_file_managed_deploy_key_{{ deploy_key }}
+      - formulas_file_managed_deploy_key_{{ pillar_deploy_key }}
 # @TODO   - depth: 1
 # @TODO   - require:
 #      - pkg: git

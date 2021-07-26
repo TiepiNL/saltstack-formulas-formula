@@ -32,7 +32,7 @@ formulas_file_managed_deploy_key_{{ key_directory }}/{{ deploy_key }}:
     # for that (chicken-egg). That's why we don't use a source file
     # but a contents string instead.
     - contents: |
-        {{ key_details.contents | indent(8) }}
+        {{ deploy_key_details.contents | indent(8) }}
     - makedirs: True
     - dir_mode: 700
     # Any file permissions other then x00 are too open, and will result

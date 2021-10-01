@@ -62,10 +62,7 @@ formulas_repo_present_{{repo_name}}:
       {%- if deploy_key != False %}
     - identity: {{deploy_key}}
       {%- endif %}
-      {%- if deploy_key != False %}
-    - require:
-      - formulas_file_managed_deploy_key_{{ deploy_key }}
-      {%- endif %}      
+     
 # @TODO:
 #    - depth: 1 (Changed in version 2019.2.0: This option now supports tags as well as branches, on Git 1.8.0 and newer.)
 #    --single-branch

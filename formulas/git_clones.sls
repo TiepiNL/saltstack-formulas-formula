@@ -1,10 +1,6 @@
 # Read the readme.md in the repository for a description of this state's functionality.
 # Further reference: https://docs.saltstack.com/en/latest/ref/states/all/salt.states.git.html
 
-include:
-  # Required for key dependency.
-  - .config
-
 
 {%- set default_destination_directory = salt['pillar.get']('formulas:local_formula_destination_directory', '/srv/saltstack-formulas') %}
 

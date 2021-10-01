@@ -41,10 +41,7 @@ formulas_repo_present_{{repo_name}}:
       {%- if deploy_key != False %}
     - identity: {{deploy_key}}
       {%- endif %}
-      {%- if deploy_key != False %}
-    - require:
-      - formulas_file_managed_deploy_key_{{ deploy_key }}
-      {%- endif %} 
+
 # @TODO:
 #    - depth: 1
 #    --single-branch
